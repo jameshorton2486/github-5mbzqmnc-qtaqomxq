@@ -32,52 +32,77 @@ const server = createServer(async (req, res) => {
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
+  // Log incoming requests
+  console.log(`${req.method} ${req.url}`);
+
   if (req.method === 'OPTIONS') {
     res.writeHead(204);
     res.end();
     return;
   }
 
-  if (req.method === 'POST' && req.url === '/transcribe') {
-    const filesToCleanup = new Set();
+  // Route handling
+  const routes = {
+    '/api/transcribe': handleTranscribe,
+    '/api/health': handleHealth
+  };
 
-    try {
-      const contentType = req.headers['content-type'] || '';
-      let audioBuffer;
-
-      if (contentType.includes('multipart/form-data')) {
-        audioBuffer = await handleFileUpload(req, filesToCleanup);
-      } else if (contentType.includes('application/json')) {
-        audioBuffer = await handleYouTubeUrl(req, filesToCleanup);
-      } else {
-        throw new Error('Invalid content type. Expected multipart/form-data or application/json');
-      }
-
-      const transcriptionData = await transcribeAudio(audioBuffer);
-      res.writeHead(200, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify({ transcription: transcriptionData }));
-
-    } catch (error) {
-      console.error('Error:', error);
-      const statusCode = error.message.includes('Invalid') ? 400 : 500;
-      res.writeHead(statusCode, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify({ error: error.message }));
-
-    } finally {
-      // Clean up temporary files
-      for (const file of filesToCleanup) {
-        try {
-          await unlink(file);
-        } catch (error) {
-          console.error(`Failed to clean up ${file}:`, error);
-        }
-      }
-    }
+  const handler = routes[req.url];
+  if (handler) {
+    await handler(req, res);
   } else {
     res.writeHead(404, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify({ error: 'Not found' }));
   }
 });
+
+async function handleHealth(req, res) {
+  res.writeHead(200, { 'Content-Type': 'application/json' });
+  res.end(JSON.stringify({ status: 'ok' }));
+}
+
+async function handleTranscribe(req, res) {
+  if (req.method !== 'POST') {
+    res.writeHead(405, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ error: 'Method not allowed' }));
+    return;
+  }
+
+  const filesToCleanup = new Set();
+
+  try {
+    const contentType = req.headers['content-type'] || '';
+    let audioBuffer;
+
+    if (contentType.includes('multipart/form-data')) {
+      audioBuffer = await handleFileUpload(req, filesToCleanup);
+    } else if (contentType.includes('application/json')) {
+      audioBuffer = await handleYouTubeUrl(req, filesToCleanup);
+    } else {
+      throw new Error('Invalid content type. Expected multipart/form-data or application/json');
+    }
+
+    const transcriptionData = await transcribeAudio(audioBuffer);
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ transcription: transcriptionData }));
+
+  } catch (error) {
+    console.error('Error:', error);
+    const statusCode = error.message.includes('Invalid') ? 400 : 500;
+    res.writeHead(statusCode, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ error: error.message }));
+
+  } finally {
+    // Clean up temporary files
+    for (const file of filesToCleanup) {
+      try {
+        await unlink(file);
+      } catch (error) {
+        console.error(`Failed to clean up ${file}:`, error);
+      }
+    }
+  }
+}
 
 async function handleFileUpload(req, filesToCleanup) {
   return new Promise((resolve, reject) => {
@@ -207,7 +232,9 @@ async function startServer(port) {
       server.listen(port, () => {
         console.log(`
 🚀 Server running on port ${port}
-📝 API endpoint: http://localhost:${port}/transcribe
+📝 API endpoints:
+   - POST /api/transcribe
+   - GET /api/health
 📦 Max file size: ${MAX_FILE_SIZE / 1024 / 1024}MB
         `);
         resolve(true);

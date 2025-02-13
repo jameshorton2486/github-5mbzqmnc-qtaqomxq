@@ -29,7 +29,6 @@ export default defineConfig(({ mode }) => {
           target: 'http://localhost:3000',
           changeOrigin: true,
           secure: false,
-          rewrite: (path) => path.replace(/^\/api/, ''),
         }
       },
       port: parseInt(process.env.PORT || '5173', 10),
