@@ -18,7 +18,9 @@
     "test:deepgram": "tsx src/lib/test-deepgram.ts",
     "test:supabase": "tsx src/lib/test-supabase.ts",
     "validate:env": "tsx src/lib/validate-env.ts",
-    "validate": "npm run validate:env && npm run test:supabase && npm run test:deepgram"
+    "validate": "npm run validate:env && npm run test:supabase && npm run test:deepgram",
+    "analyze:ts": "tsx scripts/analyzeTypeScript.ts",
+    "fix:ts": "tsx scripts/analyzeTypeScript.ts --fix"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.39.7",
@@ -62,6 +64,7 @@
     "prettier": "^3.2.5",
     "prettier-plugin-tailwindcss": "^0.5.11",
     "tailwindcss": "^3.4.1",
+    "ts-morph": "^21.0.1",
     "tsx": "^4.7.1",
     "typescript": "^5.3.3",
     "typescript-eslint": "^7.0.2",
