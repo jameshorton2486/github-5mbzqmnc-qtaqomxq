@@ -6,39 +6,86 @@ export default {
   ],
   darkMode: 'class',
   theme: {
+    container: {
+      center: true,
+      padding: "2rem",
+      screens: {
+        "2xl": "1400px",
+      },
+    },
     extend: {
       colors: {
-        // Light mode colors
-        'primary-light': '#8B5CF6',
-        'secondary-light': '#F3F4F6',
-        'background-light': '#FFFFFF',
-        'text-light': '#1F2937',
-        
-        // Dark mode colors
-        'primary-dark': '#A78BFA',
-        'secondary-dark': '#374151',
-        'background-dark': '#111827',
-        'text-dark': '#F9FAFB',
+        border: "hsl(var(--border))",
+        input: "hsl(var(--input))",
+        ring: "hsl(var(--ring))",
+        background: "hsl(var(--background))",
+        foreground: "hsl(var(--foreground))",
+        primary: {
+          DEFAULT: "hsl(var(--primary))",
+          foreground: "hsl(var(--primary-foreground))",
+        },
+        secondary: {
+          DEFAULT: "hsl(var(--secondary))",
+          foreground: "hsl(var(--secondary-foreground))",
+        },
+        destructive: {
+          DEFAULT: "hsl(var(--destructive))",
+          foreground: "hsl(var(--destructive-foreground))",
+        },
+        muted: {
+          DEFAULT: "hsl(var(--muted))",
+          foreground: "hsl(var(--muted-foreground))",
+        },
+        accent: {
+          DEFAULT: "hsl(var(--accent))",
+          foreground: "hsl(var(--accent-foreground))",
+        },
+        popover: {
+          DEFAULT: "hsl(var(--popover))",
+          foreground: "hsl(var(--popover-foreground))",
+        },
+        card: {
+          DEFAULT: "hsl(var(--card))",
+          foreground: "hsl(var(--card-foreground))",
+        },
+      },
+      borderRadius: {
+        lg: "var(--radius)",
+        md: "calc(var(--radius) - 2px)",
+        sm: "calc(var(--radius) - 4px)",
       },
       typography: {
         DEFAULT: {
           css: {
             maxWidth: 'none',
-            color: 'var(--tw-prose-body)',
-            '--tw-prose-body': 'theme(colors.text-dark)',
-            '--tw-prose-headings': 'theme(colors.text-dark)',
-            '--tw-prose-links': 'theme(colors.primary-dark)',
-            '--tw-prose-bold': 'theme(colors.text-dark)',
-            '--tw-prose-code': 'theme(colors.primary-dark)',
-            '--tw-prose-quotes': '#94A3B8',
-            
-            // Light mode overrides
-            '.light &': {
-              '--tw-prose-body': 'theme(colors.text-light)',
-              '--tw-prose-headings': 'theme(colors.text-light)',
-              '--tw-prose-links': 'theme(colors.primary-light)',
-              '--tw-prose-bold': 'theme(colors.text-light)',
-              '--tw-prose-code': 'theme(colors.primary-light)',
+            color: 'hsl(var(--foreground))',
+            a: {
+              color: 'hsl(var(--primary))',
+              '&:hover': {
+                color: 'hsl(var(--primary))',
+              },
+            },
+            h1: {
+              color: 'hsl(var(--foreground))',
+            },
+            h2: {
+              color: 'hsl(var(--foreground))',
+            },
+            h3: {
+              color: 'hsl(var(--foreground))',
+            },
+            h4: {
+              color: 'hsl(var(--foreground))',
+            },
+            strong: {
+              color: 'hsl(var(--foreground))',
+            },
+            code: {
+              color: 'hsl(var(--primary))',
+            },
+            blockquote: {
+              color: 'hsl(var(--muted-foreground))',
+              borderLeftColor: 'hsl(var(--primary))',
             },
           },
         },

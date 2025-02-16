@@ -9,11 +9,14 @@ interface LogEntry {
   message: string;
   context?: LogContext;
   error?: Error;
+  theme?: 'light' | 'dark';
 }
 
 class Logger {
   private static instance: Logger;
   private isDev: boolean;
+  private logBuffer: LogEntry[] = [];
+  private maxBufferSize = 1000;
 
   private constructor() {
     this.isDev = config.server.isDev;
@@ -27,16 +30,25 @@ class Logger {
   }
 
   private formatLogEntry(level: LogLevel, message: string, context?: LogContext, error?: Error): LogEntry {
+    const theme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
+    
     return {
       timestamp: new Date().toISOString(),
       level,
       message,
       context,
-      error
+      error,
+      theme
     };
   }
 
   private log(entry: LogEntry): void {
+    // Add to buffer
+    this.logBuffer.push(entry);
+    if (this.logBuffer.length > this.maxBufferSize) {
+      this.logBuffer.shift();
+    }
+
     const logString = JSON.stringify(entry, (key, value) => {
       if (value instanceof Error) {
         return {
@@ -51,14 +63,14 @@ class Logger {
     // In development, use console methods with appropriate styling
     if (this.isDev) {
       const styles = {
-        debug: 'color: #6B7280',
-        info: 'color: #60A5FA',
-        warn: 'color: #FBBF24',
-        error: 'color: #EF4444; font-weight: bold'
+        debug: `color: ${entry.theme === 'dark' ? '#9CA3AF' : '#6B7280'}`,
+        info: `color: ${entry.theme === 'dark' ? '#93C5FD' : '#60A5FA'}`,
+        warn: `color: ${entry.theme === 'dark' ? '#FCD34D' : '#FBBF24'}`,
+        error: `color: ${entry.theme === 'dark' ? '#F87171' : '#EF4444'}; font-weight: bold`
       };
 
       console[entry.level === 'debug' ? 'log' : entry.level](
-        `%c${entry.level.toUpperCase()} ${entry.message}`,
+        `%c${entry.level.toUpperCase()} [${new Date().toLocaleTimeString()}] ${entry.message}`,
         styles[entry.level],
         entry.context || '',
         entry.error || ''
@@ -88,17 +100,29 @@ class Logger {
     this.log(this.formatLogEntry('error', message, context, error));
   }
 
-  // Track performance
+  // Performance tracking
   time(label: string): void {
     if (this.isDev) {
       console.time(label);
+      this.debug(`Starting performance measurement: ${label}`);
     }
   }
 
   timeEnd(label: string): void {
     if (this.isDev) {
       console.timeEnd(label);
+      this.debug(`Ending performance measurement: ${label}`);
     }
+  }
+
+  // Get recent logs
+  getLogs(count = 100): LogEntry[] {
+    return this.logBuffer.slice(-count);
+  }
+
+  // Clear log buffer
+  clearLogs(): void {
+    this.logBuffer = [];
   }
 }
 
