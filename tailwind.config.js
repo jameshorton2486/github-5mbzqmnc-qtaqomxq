@@ -4,41 +4,41 @@ export default {
     './index.html',
     './src/**/*.{js,ts,jsx,tsx}',
   ],
-  darkMode: 'class', // Enable dark mode support
+  darkMode: 'class',
   theme: {
     extend: {
+      colors: {
+        // Light mode colors
+        'primary-light': '#8B5CF6',
+        'secondary-light': '#F3F4F6',
+        'background-light': '#FFFFFF',
+        'text-light': '#1F2937',
+        
+        // Dark mode colors
+        'primary-dark': '#A78BFA',
+        'secondary-dark': '#374151',
+        'background-dark': '#111827',
+        'text-dark': '#F9FAFB',
+      },
       typography: {
         DEFAULT: {
           css: {
             maxWidth: 'none',
-            color: 'white',
-            a: {
-              color: '#8B5CF6',
-              '&:hover': {
-                color: '#A78BFA',
-              },
-            },
-            h1: {
-              color: 'white',
-            },
-            h2: {
-              color: 'white',
-            },
-            h3: {
-              color: 'white',
-            },
-            h4: {
-              color: 'white',
-            },
-            strong: {
-              color: 'white',
-            },
-            code: {
-              color: '#8B5CF6',
-            },
-            blockquote: {
-              color: '#94A3B8',
-              borderLeftColor: '#4C1D95',
+            color: 'var(--tw-prose-body)',
+            '--tw-prose-body': 'theme(colors.text-dark)',
+            '--tw-prose-headings': 'theme(colors.text-dark)',
+            '--tw-prose-links': 'theme(colors.primary-dark)',
+            '--tw-prose-bold': 'theme(colors.text-dark)',
+            '--tw-prose-code': 'theme(colors.primary-dark)',
+            '--tw-prose-quotes': '#94A3B8',
+            
+            // Light mode overrides
+            '.light &': {
+              '--tw-prose-body': 'theme(colors.text-light)',
+              '--tw-prose-headings': 'theme(colors.text-light)',
+              '--tw-prose-links': 'theme(colors.primary-light)',
+              '--tw-prose-bold': 'theme(colors.text-light)',
+              '--tw-prose-code': 'theme(colors.primary-light)',
             },
           },
         },
@@ -47,8 +47,6 @@ export default {
         'fade-in': 'fade-in 0.5s ease-out',
         'slide-up': 'slide-up 0.5s ease-out',
         'pulse-subtle': 'pulse-subtle 2s ease-in-out infinite',
-        'slide-in-right': 'slide-in-right 0.5s ease-out',
-        'slide-in-left': 'slide-in-left 0.5s ease-out',
       },
       keyframes: {
         'fade-in': {
@@ -79,38 +77,6 @@ export default {
             opacity: '0.8',
           },
         },
-        'slide-in-right': {
-          '0%': {
-            opacity: '0',
-            transform: 'translateX(20px)',
-          },
-          '100%': {
-            opacity: '1',
-            transform: 'translateX(0)',
-          },
-        },
-        'slide-in-left': {
-          '0%': {
-            opacity: '0',
-            transform: 'translateX(-20px)',
-          },
-          '100%': {
-            opacity: '1',
-            transform: 'translateX(0)',
-          },
-        },
-      },
-      fontFamily: {
-        sans: ['Inter var', 'system-ui', 'sans-serif'],
-      },
-      colors: {
-        'glass': {
-          DEFAULT: 'rgba(255, 255, 255, 0.1)',
-          dark: 'rgba(0, 0, 0, 0.3)',
-        },
-      },
-      backdropBlur: {
-        xs: '2px',
       },
     },
   },

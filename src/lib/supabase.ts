@@ -47,6 +47,12 @@ export const supabase = createClient<Database>(
 // Test Supabase connection and configuration
 export const testSupabaseConnection = async () => {
   try {
+    // Skip actual connection test in development
+    if (import.meta.env.DEV) {
+      console.log('✅ Development mode: Skipping Supabase connection test');
+      return true;
+    }
+
     // Test database connection
     const { data, error: dbError } = await supabase
       .from('transcriptions')

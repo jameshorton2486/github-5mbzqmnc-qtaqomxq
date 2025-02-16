@@ -9,7 +9,9 @@ import { History } from './pages/History';
 import { Settings } from './pages/Settings';
 import { Login } from './pages/Login';
 import { Register } from './pages/Register';
+import { ScheduleDeposition } from './pages/ScheduleDeposition';
 import { useAuth } from './hooks/useAuth';
+import { ErrorBoundary } from './components/ErrorBoundary';
 
 function App() {
   const { user, loading } = useAuth();
@@ -22,41 +24,45 @@ function App() {
     );
   }
 
-  // Determine dashboard type based on user role (simplified example)
+  // Determine dashboard type based on user role
   const userRole = user?.user_metadata?.role || 'default';
   const DashboardComponent = 
     userRole === 'videographer' ? VideographerDashboard :
     userRole === 'scopist' ? ScopistDashboard :
-    Dashboard;
+    userRole === 'attorney' ? Dashboard :
+    Home;
 
   return (
-    <div className="min-h-screen bg-gray-900">
-      {user && <Navigation />}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16">
-        <Routes>
-          <Route path="/" element={
-            user ? <DashboardComponent /> : <Navigate to="/login" replace />
-          } />
-          <Route path="/home" element={
-            user ? <Home /> : <Navigate to="/login" replace />
-          } />
-          <Route path="/history" element={
-            user ? <History /> : <Navigate to="/login" replace />
-          } />
-          <Route path="/settings" element={
-            user ? <Settings /> : <Navigate to="/login" replace />
-          } />
-          <Route path="/login" element={
-            !user ? <Login /> : <Navigate to="/" replace />
-          } />
-          <Route path="/register" element={
-            !user ? <Register /> : <Navigate to="/" replace />
-          } />
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </main>
-    </div>
+    <ErrorBoundary>
+      <div className="min-h-screen bg-gray-900">
+        {user && <Navigation />}
+        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/dashboard" element={
+              user ? <DashboardComponent /> : <Navigate to="/login" replace />
+            } />
+            <Route path="/schedule" element={
+              user ? <ScheduleDeposition /> : <Navigate to="/login" replace />
+            } />
+            <Route path="/history" element={
+              user ? <History /> : <Navigate to="/login" replace />
+            } />
+            <Route path="/settings" element={
+              user ? <Settings /> : <Navigate to="/login" replace />
+            } />
+            <Route path="/login" element={
+              !user ? <Login /> : <Navigate to="/dashboard" replace />
+            } />
+            <Route path="/register" element={
+              !user ? <Register /> : <Navigate to="/dashboard" replace />
+            } />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </main>
+      </div>
+    </ErrorBoundary>
   );
 }
 
-export default App;
+export default App

@@ -1,6 +1,21 @@
 import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Menu, X, ChevronDown, Home, FileText, History, Settings, LogOut } from 'lucide-react';
+import { 
+  Menu, 
+  X, 
+  ChevronDown, 
+  Home, 
+  FileText, 
+  History, 
+  Settings, 
+  LogOut,
+  Video,
+  Edit3,
+  Briefcase,
+  Users,
+  Calendar,
+  Layout
+} from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 
 interface NavigationItem {
@@ -8,26 +23,78 @@ interface NavigationItem {
   href: string;
   icon: React.ReactNode;
   description?: string;
+  roles?: string[];
 }
 
 const navigation: NavigationItem[] = [
   {
-    name: 'Dashboard',
+    name: 'Home',
     href: '/',
     icon: <Home className="h-5 w-5" />,
-    description: 'Dashboard and overview'
+    description: 'Overview and key information'
+  },
+  {
+    name: 'Dashboard',
+    href: '/dashboard',
+    icon: <Layout className="h-5 w-5" />,
+    description: 'Role-specific dashboard'
+  },
+  {
+    name: 'Cases',
+    href: '/cases',
+    icon: <Briefcase className="h-5 w-5" />,
+    description: 'Case management',
+    roles: ['attorney']
+  },
+  {
+    name: 'Assignments',
+    href: '/assignments',
+    icon: <FileText className="h-5 w-5" />,
+    description: 'Current assignments',
+    roles: ['reporter']
+  },
+  {
+    name: 'Recordings',
+    href: '/recordings',
+    icon: <Video className="h-5 w-5" />,
+    description: 'Video management',
+    roles: ['videographer']
+  },
+  {
+    name: 'Transcripts',
+    href: '/transcripts',
+    icon: <Edit3 className="h-5 w-5" />,
+    description: 'Transcript management',
+    roles: ['scopist', 'reporter']
+  },
+  {
+    name: 'Calendar',
+    href: '/calendar',
+    icon: <Calendar className="h-5 w-5" />,
+    description: 'Schedule management'
   },
   {
     name: 'History',
     href: '/history',
     icon: <History className="h-5 w-5" />,
-    description: 'View past recordings'
+    description: 'Activity history'
   },
   {
     name: 'Settings',
     href: '/settings',
     icon: <Settings className="h-5 w-5" />,
-    description: 'Manage your account'
+    description: 'User preferences'
+  }
+];
+
+// Admin-specific navigation items
+const adminNavigation: NavigationItem[] = [
+  {
+    name: 'User Management',
+    href: '/admin/users',
+    icon: <Users className="h-5 w-5" />,
+    description: 'Manage system users',
+    roles: ['admin']
   }
 ];
 
@@ -37,6 +104,19 @@ export function Navigation() {
   const { user, signOut } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
+
+  const userRole = user?.user_metadata?.role || 'default';
+  const isAdmin = userRole === 'admin';
+
+  // Filter navigation items based on user role
+  const filteredNavigation = navigation.filter(item => 
+    !item.roles || item.roles.includes(userRole)
+  );
+
+  // Add admin items if user is admin
+  const finalNavigation = isAdmin 
+    ? [...filteredNavigation, ...adminNavigation]
+    : filteredNavigation;
 
   const handleSignOut = async () => {
     try {
@@ -62,7 +142,7 @@ export function Navigation() {
             
             {/* Desktop navigation */}
             <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
-              {navigation.map((item) => (
+              {finalNavigation.map((item) => (
                 <Link
                   key={item.name}
                   to={item.href}
@@ -86,13 +166,28 @@ export function Navigation() {
                 onClick={() => setDropdownOpen(!dropdownOpen)}
                 className="flex items-center space-x-2 text-gray-300 hover:text-white transition-colors duration-200"
               >
-                <span>{user?.email}</span>
+                <span className="text-sm">
+                  {user?.email}
+                  {userRole && (
+                    <span className="text-gray-400 ml-2">
+                      ({userRole.charAt(0).toUpperCase() + userRole.slice(1)})
+                    </span>
+                  )}
+                </span>
                 <ChevronDown className="h-4 w-4" />
               </button>
 
               {dropdownOpen && (
                 <div className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-gray-800 ring-1 ring-black ring-opacity-5">
                   <div className="py-1">
+                    <Link
+                      to="/settings"
+                      className="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 transition-colors duration-200"
+                      onClick={() => setDropdownOpen(false)}
+                    >
+                      <Settings className="h-4 w-4 mr-2" />
+                      Settings
+                    </Link>
                     <button
                       onClick={handleSignOut}
                       className="flex items-center w-full px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 transition-colors duration-200"
@@ -126,7 +221,7 @@ export function Navigation() {
       {isOpen && (
         <div className="sm:hidden">
           <div className="pt-2 pb-3 space-y-1">
-            {navigation.map((item) => (
+            {finalNavigation.map((item) => (
               <Link
                 key={item.name}
                 to={item.href}

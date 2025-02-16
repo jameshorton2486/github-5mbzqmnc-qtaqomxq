@@ -46,6 +46,20 @@ export default defineConfig(({ mode }) => {
     },
     define: {
       'process.env': process.env
+    },
+    optimizeDeps: {
+      include: ['react', 'react-dom', 'react-router-dom', 'lucide-react']
+    },
+    build: {
+      sourcemap: true,
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            'react-vendor': ['react', 'react-dom', 'react-router-dom'],
+            'ui-vendor': ['lucide-react']
+          }
+        }
+      }
     }
   };
 });

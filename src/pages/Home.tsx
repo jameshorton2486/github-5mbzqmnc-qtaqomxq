@@ -1,6 +1,9 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { ArrowRight, Calendar, Shield, Users, Star, Video, FileText, Brain, MessageSquare } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useAuth } from '../hooks/useAuth';
+import { supabase } from '../lib/supabase';
 
 const features = [
   {
@@ -11,7 +14,8 @@ const features = [
       'Real-time transcript review and annotation',
       'AI-powered deposition assistance',
       'Create videos from transcripts'
-    ]
+    ],
+    role: 'attorney'
   },
   {
     title: 'For Court Reporters',
@@ -21,7 +25,8 @@ const features = [
       'AI-assisted editing tools',
       'Automated formatting tools',
       'Digital signature and certification'
-    ]
+    ],
+    role: 'reporter'
   },
   {
     title: 'For Videographers',
@@ -31,7 +36,8 @@ const features = [
       'Cloud-based storage and delivery',
       'Quality control and timestamps',
       'Audio enhancement tools'
-    ]
+    ],
+    role: 'videographer'
   },
   {
     title: 'For Scopists',
@@ -41,7 +47,8 @@ const features = [
       'Version control and track changes',
       'Integrated reference materials',
       'Resource library access'
-    ]
+    ],
+    role: 'scopist'
   }
 ];
 
@@ -80,28 +87,62 @@ const testimonials = [
 ];
 
 export function Home() {
+  const navigate = useNavigate();
+  const { user, signOut } = useAuth();
+
+  const handleRoleSelect = async (role: string) => {
+    if (!user) {
+      navigate('/login');
+      return;
+    }
+
+    try {
+      const { error } = await supabase.auth.updateUser({
+        data: { role: role }
+      });
+
+      if (error) throw error;
+
+      switch (role) {
+        case 'attorney':
+          navigate('/');
+          break;
+        case 'videographer':
+          navigate('/');
+          break;
+        case 'scopist':
+          navigate('/');
+          break;
+        default:
+          navigate('/');
+      }
+    } catch (error) {
+      console.error('Error updating user role:', error);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 to-black">
       {/* Hero Section */}
-      <section className="relative pt-20 pb-32 overflow-hidden">
+      <section className="relative pt-32 pb-40 overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 bg-clip-text text-transparent mb-6">
-              Streamlining Legal Depositions
+            <h1 className="text-6xl md:text-7xl font-bold bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 bg-clip-text text-transparent mb-8">
+              Legal Depositions Done Smarter
             </h1>
-            <p className="text-xl text-gray-300 max-w-3xl mx-auto mb-10">
+            <p className="text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto mb-12">
               Depo-Pro is a cutting-edge legal technology platform that revolutionizes the deposition workflow, offering a seamless experience for all stakeholders in the legal discovery process.
             </p>
-            <div className="flex justify-center gap-4">
+            <div className="flex justify-center gap-6">
               <Link
                 to="/register"
-                className="px-8 py-3 bg-purple-600 text-white rounded-lg font-medium hover:bg-purple-700 transition-colors flex items-center gap-2"
+                className="px-8 py-4 bg-purple-600 text-white rounded-lg font-medium hover:bg-purple-700 transition-colors flex items-center gap-2 text-lg"
               >
-                Get Started <ArrowRight className="h-5 w-5" />
+                Get Started <ArrowRight className="h-6 w-6" />
               </Link>
               <Link
                 to="/about"
-                className="px-8 py-3 bg-gray-800 text-white rounded-lg font-medium hover:bg-gray-700 transition-colors"
+                className="px-8 py-4 bg-gray-800 text-white rounded-lg font-medium hover:bg-gray-700 transition-colors text-lg"
               >
                 Learn More
               </Link>
@@ -121,9 +162,10 @@ export function Home() {
           </p>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {features.map((feature, index) => (
-              <div
+              <button
                 key={index}
-                className="bg-gray-800/50 backdrop-blur-sm rounded-lg p-6 hover:bg-gray-800 transition-colors duration-300"
+                onClick={() => handleRoleSelect(feature.role)}
+                className="bg-gray-800/50 backdrop-blur-sm rounded-lg p-6 hover:bg-gray-800 transition-colors duration-300 text-left"
               >
                 <div className="text-purple-500 mb-4">{feature.icon}</div>
                 <h3 className="text-xl font-semibold text-white mb-3">{feature.title}</h3>
@@ -136,7 +178,7 @@ export function Home() {
                     </li>
                   ))}
                 </ul>
-              </div>
+              </button>
             ))}
           </div>
         </div>
@@ -229,9 +271,9 @@ export function Home() {
               <h4 className="text-lg font-semibold text-white mb-4">Contact</h4>
               <ul className="space-y-2 text-gray-400">
                 <li>contact@depo-pro.com</li>
-                <li>+1 (555) 123-4567</li>
-                <li>123 Legal Street</li>
-                <li>New York, NY 10001</li>
+                <li>+1 (469) 386-6065</li>
+                <li>7234 Hovingham</li>
+                <li>San Antonio, Texas 78257</li>
               </ul>
             </div>
             <div>

@@ -1,11 +1,11 @@
-import React, { Component, type ErrorInfo } from 'react';
+import React, { Component, ErrorInfo } from 'react';
 import { AlertTriangle, RefreshCw, Home } from 'lucide-react';
-import { handleErrorBoundary } from '../lib/error-handler';
-import { Button } from './ui/Button';
+import { Button } from './Button';
 
 interface Props {
   children: React.ReactNode;
   fallback?: React.ReactNode;
+  onError?: (error: Error, errorInfo: ErrorInfo) => void;
 }
 
 interface State {
@@ -30,7 +30,8 @@ export class ErrorBoundary extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    handleErrorBoundary(error, errorInfo);
+    this.props.onError?.(error, errorInfo);
+    console.error('Error caught by ErrorBoundary:', error, errorInfo);
   }
 
   private handleReload = () => {
@@ -73,7 +74,7 @@ export class ErrorBoundary extends Component<Props, State> {
                 Back to Home
               </Button>
             </div>
-            {import.meta.env.DEV && this.state.error?.stack && (
+            {process.env.NODE_ENV === 'development' && this.state.error?.stack && (
               <div className="mt-8 text-left">
                 <details className="text-gray-400">
                   <summary className="cursor-pointer hover:text-gray-300">
