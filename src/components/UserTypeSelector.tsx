@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { 
   FileText, 
@@ -138,12 +138,7 @@ export function UserTypeSelector() {
       if (expandedPanel) {
         const panel = panelRefs.current[expandedPanel];
         if (panel && !panel.contains(event.target as Node)) {
-          // If the expanded panel is the scopist panel, navigate to home
-          if (expandedPanel === 'scopist') {
-            navigate('/');
-          } else {
-            setExpandedPanel(null);
-          }
+          setExpandedPanel(null);
         }
       }
     };
@@ -155,7 +150,17 @@ export function UserTypeSelector() {
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [expandedPanel, navigate]);
+  }, [expandedPanel]);
+
+  const handlePanelClick = (id: string) => {
+    setExpandedPanel(expandedPanel === id ? null : id);
+  };
+
+  const handleLearnMore = (e: React.MouseEvent, href: string) => {
+    e.preventDefault();
+    e.stopPropagation();
+    navigate(href);
+  };
 
   const colorVariants = {
     purple: {
@@ -196,9 +201,8 @@ export function UserTypeSelector() {
             ref={el => panelRefs.current[type.id] = el}
             className="relative"
           >
-            {/* Main Panel */}
             <button
-              onClick={() => setExpandedPanel(isExpanded ? null : type.id)}
+              onClick={() => handlePanelClick(type.id)}
               className={cn(
                 'w-full bg-gray-800/50 backdrop-blur-sm rounded-lg p-8',
                 'border border-gray-700/50',
@@ -208,8 +212,6 @@ export function UserTypeSelector() {
                 colors.border,
                 isExpanded && 'shadow-lg'
               )}
-              aria-expanded={isExpanded}
-              aria-controls={`panel-${type.id}`}
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-4">
@@ -229,7 +231,7 @@ export function UserTypeSelector() {
                   </div>
                   <div className="text-left">
                     <h3 className="text-xl font-semibold text-white">{type.title}</h3>
-                    <p className="text-gray-400 mt-1">{type.description}</p>
+                    <p className="text-gray-400">{type.description}</p>
                   </div>
                 </div>
                 <ChevronDown 
@@ -241,14 +243,11 @@ export function UserTypeSelector() {
               </div>
             </button>
 
-            {/* Expandable Content */}
             <div
-              id={`panel-${type.id}`}
               className={cn(
                 'overflow-hidden transition-all duration-500 ease-in-out origin-top',
                 isExpanded ? 'max-h-[1000px] opacity-100' : 'max-h-0 opacity-0'
               )}
-              aria-hidden={!isExpanded}
             >
               <div className="space-y-4 p-4">
                 {type.features.map((feature, index) => (
@@ -281,8 +280,8 @@ export function UserTypeSelector() {
                 ))}
 
                 <div className="flex justify-end pt-4">
-                  <Link
-                    to={type.href}
+                  <button
+                    onClick={(e) => handleLearnMore(e, type.href)}
                     className={cn(
                       'inline-flex items-center font-medium',
                       'transition-colors duration-300',
@@ -291,7 +290,7 @@ export function UserTypeSelector() {
                   >
                     Learn more
                     <ArrowRight className="ml-2 h-5 w-5" />
-                  </Link>
+                  </button>
                 </div>
               </div>
             </div>

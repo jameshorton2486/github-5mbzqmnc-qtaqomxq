@@ -1,0 +1,30 @@
+# Allow all crawlers
+User-agent: *
+Allow: /
+
+# Sitemaps
+Sitemap: https://depo-pro.com/sitemap.xml
+
+# Disallow admin and private routes
+Disallow: /admin/
+Disallow: /dashboard/
+Disallow: /settings/
+Disallow: /api/
+Disallow: /auth/
+
+# Allow crawling of landing pages
+Allow: /for-attorneys
+Allow: /for-court-reporters
+Allow: /for-videographers
+Allow: /for-scopists
+Allow: /pricing
+Allow: /blog
+Allow: /about
+Allow: /contact
+
+# Crawl-delay for better server performance
+Crawl-delay: 1
+
+# Additional sitemaps for different content types
+Sitemap: https://depo-pro.com/blog-sitemap.xml
+Sitemap: https://depo-pro.com/features-sitemap.xml

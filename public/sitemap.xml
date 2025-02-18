@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
+        xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+        http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+
+  <!-- Home Page -->
+  <url>
+    <loc>https://depo-pro.com/</loc>
+    <lastmod>2025-02-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+
+  <!-- Professional Landing Pages -->
+  <url>
+    <loc>https://depo-pro.com/for-attorneys</loc>
+    <lastmod>2025-02-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+    <image:image>
+      <image:loc>https://depo-pro.com/images/attorney-dashboard.jpg</image:loc>
+      <image:title>Attorney Dashboard - Digital Exhibit Management</image:title>
+    </image:image>
+  </url>
+
+  <url>
+    <loc>https://depo-pro.com/for-court-reporters</loc>
+    <lastmod>2025-02-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+    <image:image>
+      <image:loc>https://depo-pro.com/images/court-reporter-tools.jpg</image:loc>
+      <image:title>Court Reporter Tools - AI-Powered Transcription</image:title>
+    </image:image>
+  </url>
+
+  <url>
+    <loc>https://depo-pro.com/for-videographers</loc>
+    <lastmod>2025-02-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+    <image:image>
+      <image:loc>https://depo-pro.com/images/video-sync-tools.jpg</image:loc>
+      <image:title>Video Synchronization Tools</image:title>
+    </image:image>
+  </url>
+
+  <url>
+    <loc>https://depo-pro.com/for-scopists</loc>
+    <lastmod>2025-02-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+    <image:image>
+      <image:loc>https://depo-pro.com/images/scopist-dashboard.jpg</image:loc>
+      <image:title>Scopist Dashboard - Transcript Editing Tools</image:title>
+    </image:image>
+  </url>
+
+  <!-- Core Pages -->
+  <url>
+    <loc>https://depo-pro.com/pricing</loc>
+    <lastmod>2025-02-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://depo-pro.com/features</loc>
+    <lastmod>2025-02-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Blog Section -->
+  <url>
+    <loc>https://depo-pro.com/blog</loc>
+    <lastmod>2025-02-15</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Support Pages -->
+  <url>
+    <loc>https://depo-pro.com/support</loc>
+    <lastmod>2025-02-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://depo-pro.com/faq</loc>
+    <lastmod>2025-02-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Company Pages -->
+  <url>
+    <loc>https://depo-pro.com/about</loc>
+    <lastmod>2025-02-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://depo-pro.com/contact</loc>
+    <lastmod>2025-02-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- Legal Pages -->
+  <url>
+    <loc>https://depo-pro.com/privacy</loc>
+    <lastmod>2025-02-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
+  </url>
+
+  <url>
+    <loc>https://depo-pro.com/terms</loc>
+    <lastmod>2025-02-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
+  </url>
+</urlset>

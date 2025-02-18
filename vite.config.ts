@@ -56,10 +56,38 @@ export default defineConfig(({ mode }) => {
         output: {
           manualChunks: {
             'react-vendor': ['react', 'react-dom', 'react-router-dom'],
-            'ui-vendor': ['lucide-react']
+            'ui-vendor': ['lucide-react'],
+            'landing': [
+              './src/pages/landing/AttorneyLanding.tsx',
+              './src/pages/landing/CourtReporterLanding.tsx',
+              './src/pages/landing/VideographerLanding.tsx',
+              './src/pages/landing/ScopistLanding.tsx'
+            ],
+            'dashboard': [
+              './src/pages/Dashboard.tsx',
+              './src/pages/VideographerDashboard.tsx',
+              './src/pages/ScopistDashboard.tsx'
+            ]
           }
         }
-      }
+      },
+      target: 'esnext',
+      minify: 'terser',
+      terserOptions: {
+        compress: {
+          drop_console: true,
+          drop_debugger: true
+        }
+      },
+      cssCodeSplit: true,
+      assetsInlineLimit: 4096,
+      chunkSizeWarningLimit: 1000
+    },
+    preview: {
+      port: 4173,
+      strictPort: true,
+      host: true,
+      open: true
     }
   };
 });
