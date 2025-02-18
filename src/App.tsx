@@ -1,6 +1,7 @@
 import React from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import { Navigation } from './components/Navigation';
+import { Footer } from './components/Footer';
 import { Home } from './pages/Home';
 import { Dashboard } from './pages/Dashboard';
 import { VideographerDashboard } from './pages/VideographerDashboard';
@@ -10,59 +11,38 @@ import { Settings } from './pages/Settings';
 import { Login } from './pages/Login';
 import { Register } from './pages/Register';
 import { ScheduleDeposition } from './pages/ScheduleDeposition';
-import { useAuth } from './hooks/useAuth';
+import { AttorneyLanding } from './pages/landing/AttorneyLanding';
+import { CourtReporterLanding } from './pages/landing/CourtReporterLanding';
+import { VideographerLanding } from './pages/landing/VideographerLanding';
+import { ScopistLanding } from './pages/landing/ScopistLanding';
 import { ErrorBoundary } from './components/ErrorBoundary';
 
 function App() {
-  const { user, loading } = useAuth();
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-500"></div>
-      </div>
-    );
-  }
-
-  // Determine dashboard type based on user role
-  const userRole = user?.user_metadata?.role || 'default';
-  const DashboardComponent = 
-    userRole === 'videographer' ? VideographerDashboard :
-    userRole === 'scopist' ? ScopistDashboard :
-    userRole === 'attorney' ? Dashboard :
-    Home;
-
   return (
     <ErrorBoundary>
-      <div className="min-h-screen bg-gray-900">
-        {user && <Navigation />}
-        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16">
+      <div className="min-h-screen bg-gray-900 flex flex-col">
+        <Navigation />
+        <main className="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16">
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/dashboard" element={
-              user ? <DashboardComponent /> : <Navigate to="/login" replace />
-            } />
-            <Route path="/schedule" element={
-              user ? <ScheduleDeposition /> : <Navigate to="/login" replace />
-            } />
-            <Route path="/history" element={
-              user ? <History /> : <Navigate to="/login" replace />
-            } />
-            <Route path="/settings" element={
-              user ? <Settings /> : <Navigate to="/login" replace />
-            } />
-            <Route path="/login" element={
-              !user ? <Login /> : <Navigate to="/dashboard" replace />
-            } />
-            <Route path="/register" element={
-              !user ? <Register /> : <Navigate to="/dashboard" replace />
-            } />
-            <Route path="*" element={<Navigate to="/" replace />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/videographer" element={<VideographerDashboard />} />
+            <Route path="/scopist" element={<ScopistDashboard />} />
+            <Route path="/schedule" element={<ScheduleDeposition />} />
+            <Route path="/history" element={<History />} />
+            <Route path="/settings" element={<Settings />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/for-attorneys" element={<AttorneyLanding />} />
+            <Route path="/for-court-reporters" element={<CourtReporterLanding />} />
+            <Route path="/for-videographers" element={<VideographerLanding />} />
+            <Route path="/for-scopists" element={<ScopistLanding />} />
           </Routes>
         </main>
+        <Footer />
       </div>
     </ErrorBoundary>
   );
 }
 
-export default App
+export default App;

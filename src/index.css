@@ -47,15 +47,38 @@
     --input: 217.2 32.6% 17.5%;
     --ring: 262.1 83.3% 57.8%;
   }
-}
 
-@layer base {
-  * {
-    @apply border-border;
+  /* Add smooth scrolling to html element */
+  html {
+    scroll-behavior: smooth;
+    height: 100%;
+    overflow-y: auto;
+    overscroll-behavior-y: none;
   }
+
+  /* Ensure body takes full height */
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground min-h-screen;
     font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  /* Add smooth transitions for height changes */
+  * {
+    transition: height 0.3s ease-in-out;
+  }
+
+  /* Optimize scrolling performance */
+  .smooth-scroll {
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+    will-change: transform;
+  }
+
+  /* Add momentum-based scrolling for touch devices */
+  @supports (-webkit-overflow-scrolling: touch) {
+    .smooth-scroll {
+      -webkit-overflow-scrolling: touch;
+    }
   }
 }
 
@@ -70,5 +93,73 @@
   
   .gradient-text {
     @apply bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 bg-clip-text text-transparent;
+  }
+
+  /* Add smooth transitions for expandable panels */
+  .expandable-panel {
+    @apply transition-all duration-300 ease-in-out transform;
+  }
+
+  .expandable-panel-content {
+    @apply transition-all duration-300 ease-in-out;
+    will-change: transform, opacity;
+  }
+}
+
+@layer utilities {
+  .animate-fade-in {
+    animation: fade-in 0.5s ease-out;
+  }
+
+  .animate-slide-up {
+    animation: slide-up 0.5s ease-out;
+  }
+
+  .animate-pulse-subtle {
+    animation: pulse-subtle 2s ease-in-out infinite;
+  }
+
+  /* Add smooth transition utilities */
+  .transition-height {
+    transition-property: height, margin;
+    transition-duration: 300ms;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .transition-expand {
+    transition-property: transform, opacity, max-height;
+    transition-duration: 300ms;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+}
+
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slide-up {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse-subtle {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.8;
   }
 }

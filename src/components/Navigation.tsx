@@ -4,8 +4,8 @@ import {
   Menu, 
   X, 
   ChevronDown, 
-  Home, 
-  FileText, 
+  Home,
+  FileText,
   History, 
   Settings, 
   LogOut,
@@ -14,7 +14,9 @@ import {
   Briefcase,
   Users,
   Calendar,
-  Layout
+  Layout,
+  HelpCircle,
+  Info
 } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 
@@ -34,89 +36,45 @@ const navigation: NavigationItem[] = [
     description: 'Overview and key information'
   },
   {
-    name: 'Dashboard',
-    href: '/dashboard',
-    icon: <Layout className="h-5 w-5" />,
-    description: 'Role-specific dashboard'
-  },
-  {
-    name: 'Cases',
-    href: '/cases',
-    icon: <Briefcase className="h-5 w-5" />,
-    description: 'Case management',
-    roles: ['attorney']
-  },
-  {
-    name: 'Assignments',
-    href: '/assignments',
-    icon: <FileText className="h-5 w-5" />,
-    description: 'Current assignments',
-    roles: ['reporter']
-  },
-  {
-    name: 'Recordings',
-    href: '/recordings',
-    icon: <Video className="h-5 w-5" />,
-    description: 'Video management',
-    roles: ['videographer']
-  },
-  {
-    name: 'Transcripts',
-    href: '/transcripts',
-    icon: <Edit3 className="h-5 w-5" />,
-    description: 'Transcript management',
-    roles: ['scopist', 'reporter']
-  },
-  {
-    name: 'Calendar',
-    href: '/calendar',
-    icon: <Calendar className="h-5 w-5" />,
-    description: 'Schedule management'
-  },
-  {
-    name: 'History',
-    href: '/history',
-    icon: <History className="h-5 w-5" />,
-    description: 'Activity history'
-  },
-  {
-    name: 'Settings',
-    href: '/settings',
-    icon: <Settings className="h-5 w-5" />,
-    description: 'User preferences'
-  }
-];
-
-// Admin-specific navigation items
-const adminNavigation: NavigationItem[] = [
-  {
-    name: 'User Management',
-    href: '/admin/users',
+    name: 'Solutions',
+    href: '/solutions',
     icon: <Users className="h-5 w-5" />,
-    description: 'Manage system users',
-    roles: ['admin']
+    dropdown: true,
+    items: [
+      { name: 'Attorneys', href: '/for-attorneys' },
+      { name: 'Court Reporters', href: '/for-court-reporters' },
+      { name: 'Videographers', href: '/for-videographers' },
+      { name: 'Scopists', href: '/for-scopists' }
+    ]
+  },
+  {
+    name: 'Pricing',
+    href: '/pricing',
+    icon: <FileText className="h-5 w-5" />
+  },
+  {
+    name: 'FAQs',
+    href: '/faqs',
+    icon: <HelpCircle className="h-5 w-5" />
+  },
+  {
+    name: 'Support',
+    href: '/support',
+    icon: <HelpCircle className="h-5 w-5" />
+  },
+  {
+    name: 'About Us',
+    href: '/about',
+    icon: <Info className="h-5 w-5" />
   }
 ];
 
 export function Navigation() {
   const [isOpen, setIsOpen] = useState(false);
-  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState<string | null>(null);
   const { user, signOut } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
-
-  const userRole = user?.user_metadata?.role || 'default';
-  const isAdmin = userRole === 'admin';
-
-  // Filter navigation items based on user role
-  const filteredNavigation = navigation.filter(item => 
-    !item.roles || item.roles.includes(userRole)
-  );
-
-  // Add admin items if user is admin
-  const finalNavigation = isAdmin 
-    ? [...filteredNavigation, ...adminNavigation]
-    : filteredNavigation;
 
   const handleSignOut = async () => {
     try {
@@ -131,74 +89,75 @@ export function Navigation() {
     <nav className="bg-gray-900/90 backdrop-blur-sm border-b border-gray-800 fixed w-full z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
-          {/* Logo and main nav */}
-          <div className="flex">
-            <div className="flex-shrink-0 flex items-center">
-              <Link to="/" className="flex items-center">
-                <FileText className="h-8 w-8 text-purple-500" />
-                <span className="ml-2 text-xl font-bold text-white">Depo-Pro</span>
-              </Link>
-            </div>
-            
-            {/* Desktop navigation */}
-            <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
-              {finalNavigation.map((item) => (
-                <Link
-                  key={item.name}
-                  to={item.href}
-                  className={`inline-flex items-center px-1 pt-1 text-sm font-medium transition-colors duration-200
-                    ${location.pathname === item.href
-                      ? 'text-white border-b-2 border-purple-500'
-                      : 'text-gray-300 hover:text-white hover:border-purple-500'
-                    }`}
-                >
-                  {item.icon}
-                  <span className="ml-2">{item.name}</span>
-                </Link>
+          {/* Logo */}
+          <div className="flex-shrink-0 flex items-center">
+            <Link to="/" className="flex items-center">
+              <FileText className="h-8 w-8 text-purple-500" />
+              <span className="ml-2 text-xl font-bold text-white">Depo-Pro</span>
+            </Link>
+          </div>
+          
+          {/* Desktop navigation */}
+          <div className="hidden sm:flex sm:items-center">
+            <div className="flex items-center space-x-8">
+              {navigation.map((item) => (
+                <div key={item.name} className="relative">
+                  {item.dropdown ? (
+                    <button
+                      onClick={() => setDropdownOpen(dropdownOpen === item.name ? null : item.name)}
+                      className={`inline-flex items-center px-3 py-2 text-sm font-medium transition-colors duration-200
+                        ${location.pathname.startsWith(item.href)
+                          ? 'text-white'
+                          : 'text-gray-300 hover:text-white'
+                        }`}
+                    >
+                      {item.name}
+                      <ChevronDown className={`ml-1 h-4 w-4 transition-transform duration-200 ${
+                        dropdownOpen === item.name ? 'rotate-180' : ''
+                      }`} />
+                    </button>
+                  ) : (
+                    <Link
+                      to={item.href}
+                      className={`inline-flex items-center px-3 py-2 text-sm font-medium transition-colors duration-200
+                        ${location.pathname === item.href
+                          ? 'text-white'
+                          : 'text-gray-300 hover:text-white'
+                        }`}
+                    >
+                      {item.name}
+                    </Link>
+                  )}
+
+                  {/* Dropdown menu */}
+                  {item.dropdown && dropdownOpen === item.name && (
+                    <div className="absolute left-0 mt-2 w-48 rounded-md shadow-lg bg-gray-800 ring-1 ring-black ring-opacity-5">
+                      <div className="py-1" role="menu">
+                        {item.items.map((subItem) => (
+                          <Link
+                            key={subItem.name}
+                            to={subItem.href}
+                            className="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white transition-colors duration-200"
+                            role="menuitem"
+                            onClick={() => setDropdownOpen(null)}
+                          >
+                            {subItem.name}
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
               ))}
             </div>
-          </div>
 
-          {/* User menu */}
-          <div className="hidden sm:ml-6 sm:flex sm:items-center">
-            <div className="relative">
-              <button
-                onClick={() => setDropdownOpen(!dropdownOpen)}
-                className="flex items-center space-x-2 text-gray-300 hover:text-white transition-colors duration-200"
-              >
-                <span className="text-sm">
-                  {user?.email}
-                  {userRole && (
-                    <span className="text-gray-400 ml-2">
-                      ({userRole.charAt(0).toUpperCase() + userRole.slice(1)})
-                    </span>
-                  )}
-                </span>
-                <ChevronDown className="h-4 w-4" />
-              </button>
-
-              {dropdownOpen && (
-                <div className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-gray-800 ring-1 ring-black ring-opacity-5">
-                  <div className="py-1">
-                    <Link
-                      to="/settings"
-                      className="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 transition-colors duration-200"
-                      onClick={() => setDropdownOpen(false)}
-                    >
-                      <Settings className="h-4 w-4 mr-2" />
-                      Settings
-                    </Link>
-                    <button
-                      onClick={handleSignOut}
-                      className="flex items-center w-full px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 transition-colors duration-200"
-                    >
-                      <LogOut className="h-4 w-4 mr-2" />
-                      Sign out
-                    </button>
-                  </div>
-                </div>
-              )}
-            </div>
+            {/* Sign Up/Login Button */}
+            <button
+              onClick={() => navigate('/login')}
+              className="ml-8 px-4 py-2 text-sm font-medium text-white bg-purple-600 rounded-lg hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-colors duration-200"
+            >
+              Sign Up / Login
+            </button>
           </div>
 
           {/* Mobile menu button */}
@@ -221,31 +180,58 @@ export function Navigation() {
       {isOpen && (
         <div className="sm:hidden">
           <div className="pt-2 pb-3 space-y-1">
-            {finalNavigation.map((item) => (
-              <Link
-                key={item.name}
-                to={item.href}
-                className={`flex items-center px-3 py-2 text-base font-medium
-                  ${location.pathname === item.href
-                    ? 'text-white bg-gray-800'
-                    : 'text-gray-300 hover:text-white hover:bg-gray-700'
-                  } transition-colors duration-200`}
-                onClick={() => setIsOpen(false)}
-              >
-                {item.icon}
-                <span className="ml-2">{item.name}</span>
-              </Link>
+            {navigation.map((item) => (
+              <div key={item.name}>
+                {item.dropdown ? (
+                  <>
+                    <button
+                      onClick={() => setDropdownOpen(dropdownOpen === item.name ? null : item.name)}
+                      className="flex items-center w-full px-3 py-2 text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700 transition-colors duration-200"
+                    >
+                      {item.icon}
+                      <span className="ml-2">{item.name}</span>
+                      <ChevronDown className={`ml-auto h-4 w-4 transition-transform duration-200 ${
+                        dropdownOpen === item.name ? 'rotate-180' : ''
+                      }`} />
+                    </button>
+                    {dropdownOpen === item.name && (
+                      <div className="pl-12 py-2 space-y-1 bg-gray-800">
+                        {item.items.map((subItem) => (
+                          <Link
+                            key={subItem.name}
+                            to={subItem.href}
+                            className="block px-3 py-2 text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700 transition-colors duration-200"
+                            onClick={() => {
+                              setDropdownOpen(null);
+                              setIsOpen(false);
+                            }}
+                          >
+                            {subItem.name}
+                          </Link>
+                        ))}
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  <Link
+                    to={item.href}
+                    className="flex items-center px-3 py-2 text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700 transition-colors duration-200"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    {item.icon}
+                    <span className="ml-2">{item.name}</span>
+                  </Link>
+                )}
+              </div>
             ))}
-            <button
-              onClick={() => {
-                handleSignOut();
-                setIsOpen(false);
-              }}
-              className="flex items-center w-full px-3 py-2 text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700 transition-colors duration-200"
+            <Link
+              to="/login"
+              className="flex items-center px-3 py-2 text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700 transition-colors duration-200"
+              onClick={() => setIsOpen(false)}
             >
               <LogOut className="h-5 w-5 mr-2" />
-              Sign out
-            </button>
+              Sign Up / Login
+            </Link>
           </div>
         </div>
       )}
