@@ -158,15 +158,19 @@
   }
 
   .nav-dropdown {
-    @apply relative group;
+    @apply relative;
   }
 
   .nav-dropdown-content {
     @apply absolute left-0 mt-2 w-48 rounded-md shadow-lg
            bg-gray-800 ring-1 ring-black ring-opacity-5
            transform opacity-0 scale-95 invisible
-           group-hover:opacity-100 group-hover:scale-100 group-hover:visible
            transition-all duration-200 origin-top-left;
+  }
+
+  /* Add this class to show dropdown content when parent is hovered */
+  .group:hover .nav-dropdown-content {
+    @apply opacity-100 scale-100 visible;
   }
 }
 

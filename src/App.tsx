@@ -22,6 +22,14 @@ const CourtReporterLanding = lazy(() => import('./pages/landing/CourtReporterLan
 const VideographerLanding = lazy(() => import('./pages/landing/VideographerLanding').then(m => ({ default: m.VideographerLanding })));
 const ScopistLanding = lazy(() => import('./pages/landing/ScopistLanding').then(m => ({ default: m.ScopistLanding })));
 
+// Lazy load legal pages
+const PrivacyPolicy = lazy(() => import('./pages/legal/PrivacyPolicy').then(m => ({ default: m.PrivacyPolicy })));
+const TermsOfService = lazy(() => import('./pages/legal/TermsOfService').then(m => ({ default: m.TermsOfService })));
+const Accessibility = lazy(() => import('./pages/legal/Accessibility').then(m => ({ default: m.Accessibility })));
+
+// Lazy load business pages
+const AboutUs = lazy(() => import('./pages/business/AboutUs').then(m => ({ default: m.AboutUs })));
+
 // Loading component
 const PageLoader = () => (
   <div className="min-h-[400px] flex items-center justify-center">
@@ -46,10 +54,20 @@ function App() {
               <Route path="/settings" element={<Settings />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
+              
+              {/* Landing Pages */}
               <Route path="/for-attorneys" element={<AttorneyLanding />} />
               <Route path="/for-court-reporters" element={<CourtReporterLanding />} />
               <Route path="/for-videographers" element={<VideographerLanding />} />
               <Route path="/for-scopists" element={<ScopistLanding />} />
+              
+              {/* Legal Pages */}
+              <Route path="/privacy" element={<PrivacyPolicy />} />
+              <Route path="/terms" element={<TermsOfService />} />
+              <Route path="/accessibility" element={<Accessibility />} />
+
+              {/* Business Pages */}
+              <Route path="/about" element={<AboutUs />} />
             </Routes>
           </Suspense>
         </main>
